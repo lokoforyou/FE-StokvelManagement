@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "northern-carver-421011"
+  },
+  "targets": {
+    "northern-carver-421011": {
+      "hosting": {
+        "stokvel-site": [
+          "northern-carver-421011"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
