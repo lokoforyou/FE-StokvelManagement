@@ -1,0 +1,122 @@
+<div class="p-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="fw-bold">Profile & Goals</h2>
+            <p class="text-muted">Manage your personal information and set your contribution targets.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm p-3 p-md-4 mb-4">
+                <h5 class="mb-4 d-flex align-items-center">
+                    <i class="bi bi-person-circle me-2 text-primary fs-4"></i>Personal Information
+                </h5>
+
+                @if (success()) {
+                    <div class="alert alert-success alert-dismissible fade show mb-4">
+                        <i class="bi bi-check-circle-fill me-2"></i>{{ success() }}
+                        <button type="button" class="btn-close" (click)="success.set(null)"></button>
+                    </div>
+                }
+                @if (error()) {
+                    <div class="alert alert-danger alert-dismissible fade show mb-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error() }}
+                        <button type="button" class="btn-close" (click)="error.set(null)"></button>
+                    </div>
+                }
+
+                <form (ngSubmit)="save()" #f="ngForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" class="form-control" name="fullName" [(ngModel)]="fullName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        <input type="email" class="form-control bg-light" [value]="member()?.email" disabled />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="tel" class="form-control" name="phone" [(ngModel)]="phone" />
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-semibold">ID Number</label>
+                            <input type="text" class="form-control" name="idNumber" [(ngModel)]="idNumber" />
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-10">
+
+                    <h5 class="mb-4 d-flex align-items-center">
+                        <i class="bi bi-flag-fill me-2 text-warning fs-4"></i>Contribution Goals
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-sm-12 mb-3">
+                            <label class="form-label fw-semibold">Planned Monthly Contribution (R)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R</span>
+                                <input type="number" min="0" class="form-control" name="monthlyContribution" [(ngModel)]="monthlyContribution" />
+                            </div>
+                            <div class="form-text">How much you intend to pay each month.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-semibold">Monthly Savings Target (R)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R</span>
+                                <input type="number" min="0" class="form-control" name="monthlyTarget" [(ngModel)]="monthlyTarget" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-semibold">Yearly Savings Target (R)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R</span>
+                                <input type="number" min="0" class="form-control" name="yearlyTarget" [(ngModel)]="yearlyTarget" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="submit" class="btn btn-primary px-4" [disabled]="loading() || f.invalid">
+                            @if (loading()) {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            Update Profile & Goals
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm p-3 p-md-4 bg-primary text-white mb-4">
+                <h5 class="mb-3">Membership Status</h5>
+                <div class="mb-4">
+                    <div class="small opacity-75">Group</div>
+                    <div class="h5 fw-bold">{{ member()?.groupId ? 'Stokvel Group ' + member()?.groupId : 'No Group' }}</div>
+                </div>
+                <div class="mb-4">
+                    <div class="small opacity-75">Role</div>
+                    <div class="h5 fw-bold">{{ member()?.role || 'Member' }}</div>
+                </div>
+                <div class="mb-0">
+                    <div class="small opacity-75">Joined Date</div>
+                    <div class="h5 fw-bold">{{ member()?.createdAt | date:'longDate' }}</div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm p-4 bg-light">
+                <h6 class="fw-bold mb-3">Goal Setting Tips</h6>
+                <ul class="small text-secondary ps-3">
+                    <li class="mb-2">Your <strong>Monthly Contribution</strong> is your commitment to the group.</li>
+                    <li class="mb-2">Setting a <strong>Yearly Target</strong> helps you track your progress on the dashboard.</li>
+                    <li class="mb-0">Admins can see if you're meeting your targets to help with group planning.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
