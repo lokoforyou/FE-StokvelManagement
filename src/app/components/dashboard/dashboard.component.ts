@@ -133,7 +133,7 @@ import { Member, MemberStats, Payment } from '../../models/types';
       </div>
       }
 
-      @if (auth.member()?.role === 'Admin') {
+      @if (auth.member()?.role === 'Admin' || auth.member()?.isSuperAdmin) {
         <div class="alert alert-info d-flex align-items-center mb-4 border-0 shadow-sm py-3">
           <i class="bi bi-shield-lock-fill me-3 fs-3"></i>
           <div>

@@ -40,7 +40,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>("/api/auth/login", { email, password })
+      .post<AuthResponse>(`https://stokvel-backend-113092091685.us-central1.run.app/api/auth/login`, { email, password })
       .pipe(tap((res) => this.setSession(res)));
   }
 
@@ -53,7 +53,7 @@ export class AuthService {
     groupName?: string;
   }): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>("/api/auth/signup", payload)
+      .post<AuthResponse>(`https://stokvel-backend-113092091685.us-central1.run.app/api/auth/signup`, payload)
       .pipe(tap((res) => this.setSession(res)));
   }
 

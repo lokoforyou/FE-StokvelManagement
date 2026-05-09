@@ -17,7 +17,7 @@
             <li class="nav-item">
                 <a class="nav-link" routerLink="/profile" routerLinkActive="active">Profile</a>
             </li>
-            @if (auth.member()?.role === 'Admin' || auth.member()?.isSuperAdmin) {
+            @if (auth.member()?.role === 'Admin' || !!auth.member()?.isSuperAdmin) {
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/member-management" routerLinkActive="active">Manage Members</a>
                 </li>

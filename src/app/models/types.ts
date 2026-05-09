@@ -8,6 +8,7 @@ export interface Member {
   createdAt?: string;
   groupId?: number;
   role?: 'Admin' | 'Member';
+  isSuperAdmin?: boolean;
   monthlyTarget?: number;
   yearlyTarget?: number;
 }

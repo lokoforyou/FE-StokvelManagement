@@ -44,19 +44,25 @@ import { AuthService } from '../../services/auth.service';
                 <tr>
                   <td>
                     <div class="fw-bold">{{ u.name }}</div>
-                    @if (u.isSuperAdmin) { <span class="badge bg-danger x-small">Super Admin</span> }
+                    @if (u.isSuperAdmin) { <span class="badge bg-danger x-small">System Admin</span> }
                   </td>
                   <td>{{ u.email }}</td>
                   <td>{{ u.groupName || 'No Group' }}</td>
                   <td>
-                    <span class="badge" [ngClass]="u.role === 'Admin' ? 'bg-primary' : 'bg-secondary'">{{ u.role || 'Member' }}</span>
+                    <span class="badge" [ngClass]="(u.role === 'Admin' || u.isSuperAdmin) ? 'bg-primary' : 'bg-secondary'">
+                      {{ u.isSuperAdmin ? 'Admin (Super)' : (u.role || 'Member') }}
+                    </span>
                   </td>
                   <td class="text-end">
                     <div class="btn-group btn-group-sm">
-                      @if (u.role === 'Admin') {
-                        <button class="btn btn-outline-warning" (click)="updateRole(u, 'Member')">Make Member</button>
+                      @if (!u.isSuperAdmin) {
+                        @if (u.role === 'Admin') {
+                          <button class="btn btn-outline-warning" (click)="updateRole(u, 'Member')">Make Member</button>
+                        } @else {
+                          <button class="btn btn-outline-primary" (click)="updateRole(u, 'Admin')">Promote Admin</button>
+                        }
                       } @else {
-                        <button class="btn btn-outline-primary" (click)="updateRole(u, 'Admin')">Promote Admin</button>
+                         <span class="text-muted small">Cannot modify Super Admin</span>
                       }
                     </div>
                   </td>
