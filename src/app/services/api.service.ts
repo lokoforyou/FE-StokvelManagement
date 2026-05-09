@@ -72,4 +72,8 @@ export class ApiService {
   updateGroupMemberRole(groupId: number, userId: number, role: string): Observable<{ success: boolean }> {
     return this.http.post<{ success: boolean }>(`${this.baseUrl}/api/groups/${groupId}/members/${userId}/role`, { role });
   }
+
+  updateGroupSettings(groupId: number, settings: { description: string; monthlyTarget: number; yearlyTarget: number }): Observable<{ success: boolean }> {
+    return this.http.put<{ success: boolean }>(`${this.baseUrl}/api/groups/${groupId}`, settings);
+  }
 }

@@ -23,6 +23,7 @@ export const routes: Routes = [
       { path: "payments", component: PaymentsComponent },
       { path: "profile", component: ProfileComponent },
       { path: "member-management", component: MemberManagementComponent },
+      { path: "group-management", component: import('./components/group-management/group-management.component').then(m => m.GroupManagementComponent) },
     ],
   },
   { path: "**", redirectTo: "" },
