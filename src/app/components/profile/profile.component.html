@@ -109,6 +109,41 @@
                 </div>
             </div>
 
+            <div class="card border-0 shadow-sm p-4 bg-light mb-4">
+                <h6 class="fw-bold mb-3 d-flex align-items-center">
+                    <i class="bi bi-people-fill me-2 text-primary"></i>Join Existing Group
+                </h6>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Select Group</label>
+                    <select class="form-select" [(ngModel)]="selectedGroupId">
+                        <option [ngValue]="null">-- Select a group --</option>
+                        @for (g of groups(); track g.id) {
+                            <option [ngValue]="g.id">{{ g.name }}</option>
+                        }
+                    </select>
+                </div>
+                <button class="btn btn-outline-primary btn-sm w-100" (click)="joinGroup()" [disabled]="!selectedGroupId || loading()">
+                    Join Group
+                </button>
+            </div>
+
+            <div class="card border-0 shadow-sm p-4 bg-light mb-4">
+                <h6 class="fw-bold mb-3 d-flex align-items-center">
+                    <i class="bi bi-plus-circle-fill me-2 text-success"></i>Create New Group
+                </h6>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Group Name</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="newGroupName" placeholder="e.g. My New Stokvel" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Description</label>
+                    <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="newGroupDesc"></textarea>
+                </div>
+                <button class="btn btn-success btn-sm w-100" (click)="createGroup()" [disabled]="!newGroupName || loading()">
+                    Create & Join as Admin
+                </button>
+            </div>
+
             <div class="card border-0 shadow-sm p-4 bg-light">
                 <h6 class="fw-bold mb-3">Goal Setting Tips</h6>
                 <ul class="small text-secondary ps-3">

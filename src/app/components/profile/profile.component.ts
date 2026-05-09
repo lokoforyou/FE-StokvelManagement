@@ -17,6 +17,9 @@ export class ProfileComponent implements OnInit {
   private auth = inject(AuthService);
 
   member = signal<Member | null>(null);
+  groups = signal<{ id: number; name: string; description: string }[]>([]);
+  
+  // Profile Form
   fullName = "";
   phone = "";
   idNumber = "";
@@ -24,11 +27,21 @@ export class ProfileComponent implements OnInit {
   monthlyTarget = 0;
   yearlyTarget = 0;
 
+  // Group Form
+  selectedGroupId: number | null = null;
+  newGroupName = "";
+  newGroupDesc = "";
+
   loading = signal(false);
   success = signal<string | null>(null);
   error = signal<string | null>(null);
 
   ngOnInit(): void {
+    this.loadData();
+    this.api.listGroups().subscribe(res => this.groups.set(res.groups));
+  }
+
+  loadData(): void {
     this.api.getMe().subscribe((res) => {
       this.member.set(res.member);
       this.fullName = res.member.fullName;
@@ -37,6 +50,7 @@ export class ProfileComponent implements OnInit {
       this.monthlyContribution = res.member.monthlyContribution ?? 0;
       this.monthlyTarget = res.member.monthlyTarget ?? 0;
       this.yearlyTarget = res.member.yearlyTarget ?? 0;
+      this.selectedGroupId = res.member.groupId || null;
     });
   }
 
@@ -65,5 +79,40 @@ export class ProfileComponent implements OnInit {
           this.error.set(err?.error?.error || "Failed to update profile");
         },
       });
+  }
+
+  joinGroup(): void {
+    if (!this.selectedGroupId) return;
+    this.loading.set(true);
+    this.api.joinGroup(this.selectedGroupId).subscribe({
+      next: () => {
+        this.success.set("Successfully joined the group.");
+        this.loadData();
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set("Failed to join group.");
+        this.loading.set(false);
+      }
+    });
+  }
+
+  createGroup(): void {
+    if (!this.newGroupName) return;
+    this.loading.set(true);
+    this.api.createGroup({ name: this.newGroupName, description: this.newGroupDesc }).subscribe({
+      next: () => {
+        this.success.set("New group created and joined as Admin.");
+        this.loadData();
+        this.newGroupName = "";
+        this.newGroupDesc = "";
+        this.loading.set(false);
+        this.api.listGroups().subscribe(res => this.groups.set(res.groups));
+      },
+      error: () => {
+        this.error.set("Failed to create group.");
+        this.loading.set(false);
+      }
+    });
   }
 }
