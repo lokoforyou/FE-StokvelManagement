@@ -41,9 +41,15 @@ import { Member, MemberStats, Payment } from '../../models/types';
             <h6 class="text-muted mb-1 small uppercase fw-bold">Yearly Progress</h6>
             <h3 class="fw-bold text-primary">R {{ stats()?.yearlyContributions || 0 }}</h3>
             <div class="progress mt-2" style="height: 6px;">
-              <div class="progress-bar" [style.width.%]="getPercent(stats()?.yearlyContributions, auth.member()?.yearlyTarget)"></div>
+              <div class="progress-bar" [style.width.%]="getPercentLimit(stats()?.yearlyContributions, auth.member()?.yearlyTarget)"></div>
             </div>
-            <div class="small text-muted mt-1">Goal: R {{ auth.member()?.yearlyTarget || 0 }}</div>
+            <div class="small text-muted mt-1">
+              @if (getPercent(stats()?.yearlyContributions, auth.member()?.yearlyTarget) > 100) {
+                <span class="text-success fw-bold">Exceeded by R {{ (stats()?.yearlyContributions ?? 0) - (auth.member()?.yearlyTarget ?? 0) }}</span>
+              } @else {
+                Goal: R {{ auth.member()?.yearlyTarget || 0 }}
+              }
+            </div>
           </div>
         </div>
         <div class="col-md-3">
@@ -51,9 +57,15 @@ import { Member, MemberStats, Payment } from '../../models/types';
             <h6 class="text-muted mb-1 small uppercase fw-bold">Monthly Status</h6>
             <h3 class="fw-bold text-dark">R {{ stats()?.monthlyVerified || 0 }}</h3>
             <div class="progress mt-2" style="height: 6px;">
-              <div class="progress-bar bg-warning" [style.width.%]="getPercent(stats()?.monthlyVerified, auth.member()?.monthlyTarget)"></div>
+              <div class="progress-bar bg-warning" [style.width.%]="getPercentLimit(stats()?.monthlyVerified, auth.member()?.monthlyTarget)"></div>
             </div>
-            <div class="small text-muted mt-1">Target: R {{ auth.member()?.monthlyTarget || 0 }}</div>
+            <div class="small text-muted mt-1">
+              @if (getPercent(stats()?.monthlyVerified, auth.member()?.monthlyTarget) > 100) {
+                <span class="text-warning fw-bold">Exceeded by R {{ (stats()?.monthlyVerified ?? 0) - (auth.member()?.monthlyTarget ?? 0) }}</span>
+              } @else {
+                Target: R {{ auth.member()?.monthlyTarget || 0 }}
+              }
+            </div>
           </div>
         </div>
         <div class="col-md-3">
@@ -83,10 +95,16 @@ import { Member, MemberStats, Payment } from '../../models/types';
                 </div>
                 <div class="progress bg-white" style="height: 12px;">
                   <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                       [style.width.%]="getPercent(stats()?.group?.groupBalance, stats()?.group?.yearlyTarget)"></div>
+                       [style.width.%]="getPercentLimit(stats()?.group?.groupBalance, stats()?.group?.yearlyTarget)"></div>
                 </div>
                 <div class="d-flex justify-content-between mt-1">
-                  <span class="small text-muted">R {{ stats()?.group?.groupBalance }} raised</span>
+                  <span class="small text-muted">
+                    @if (getPercent(stats()?.group?.groupBalance, stats()?.group?.yearlyTarget) > 100) {
+                      <span class="text-success fw-bold">Target exceeded by R {{ (stats()?.group?.groupBalance ?? 0) - (stats()?.group?.yearlyTarget ?? 0) }}</span>
+                    } @else {
+                      R {{ stats()?.group?.groupBalance }} raised
+                    }
+                  </span>
                   <span class="small text-muted">Goal: R {{ stats()?.group?.yearlyTarget }}</span>
                 </div>
               </div>
@@ -96,10 +114,16 @@ import { Member, MemberStats, Payment } from '../../models/types';
                   <span class="small fw-bold">{{ getPercent(stats()?.groupMonthlyVerified, stats()?.group?.monthlyTarget) }}%</span>
                 </div>
                 <div class="progress bg-white" style="height: 12px;">
-                  <div class="progress-bar bg-info" [style.width.%]="getPercent(stats()?.groupMonthlyVerified, stats()?.group?.monthlyTarget)"></div>
+                  <div class="progress-bar bg-info" [style.width.%]="getPercentLimit(stats()?.groupMonthlyVerified, stats()?.group?.monthlyTarget)"></div>
                 </div>
                 <div class="d-flex justify-content-between mt-1">
-                  <span class="small text-muted">R {{ stats()?.groupMonthlyVerified || 0 }} this month</span>
+                  <span class="small text-muted">
+                    @if (getPercent(stats()?.groupMonthlyVerified, stats()?.group?.monthlyTarget) > 100) {
+                      <span class="text-info fw-bold">Target exceeded by R {{ (stats()?.groupMonthlyVerified ?? 0) - (stats()?.group?.monthlyTarget ?? 0) }}</span>
+                    } @else {
+                      R {{ stats()?.groupMonthlyVerified || 0 }} this month
+                    }
+                  </span>
                   <span class="small text-muted">Goal: R {{ stats()?.group?.monthlyTarget }}</span>
                 </div>
               </div>
@@ -197,7 +221,11 @@ export class DashboardComponent implements OnInit {
 
   getPercent(actual: number | undefined, target: number | undefined): number {
     if (!target || target <= 0) return 0;
-    const p = Math.round(((actual || 0) / target) * 100);
+    return Math.round(((actual || 0) / target) * 100);
+  }
+
+  getPercentLimit(actual: number | undefined, target: number | undefined): number {
+    const p = this.getPercent(actual, target);
     return p > 100 ? 100 : p;
   }
 }
