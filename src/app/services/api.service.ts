@@ -59,4 +59,17 @@ export class ApiService {
   joinGroup(groupId: number): Observable<{ success: boolean }> {
     return this.http.post<{ success: boolean }>(`${this.baseUrl}/api/groups/join`, { groupId });
   }
+
+  // Admin Management
+  adminUserList(): Observable<{ users: any[] }> {
+    return this.http.get<{ users: any[] }>(`${this.baseUrl}/api/admin/users`);
+  }
+
+  updateAnyUserRole(userId: number, role: string, groupId: number): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.baseUrl}/api/admin/users/${userId}/role`, { role, groupId });
+  }
+
+  updateGroupMemberRole(groupId: number, userId: number, role: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.baseUrl}/api/groups/${groupId}/members/${userId}/role`, { role });
+  }
 }
